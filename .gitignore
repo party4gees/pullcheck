@@ -1,0 +1,10 @@
+node_modules/
+
+yarn-debug.log*
+.cache/
+build/
+yarn-error.log*
+.parcel-cache/
+*.log
+.next/
+npm-debug.log*
