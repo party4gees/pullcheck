@@ -23,6 +23,11 @@ describe('daysSince', () => {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
     expect(daysSince(sevenDaysAgo)).toBeCloseTo(7, 0);
   });
+
+  it('returns a positive value for a past date', () => {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    expect(daysSince(thirtyDaysAgo)).toBeGreaterThan(0);
+  });
 });
 
 describe('getStalePullRequests', () => {
@@ -63,6 +68,11 @@ describe('getStalePullRequests', () => {
     expect(pr.author).toBe('alice');
     expect(pr.requestedReviewers).toEqual(['bob']);
     expect(pr.url).toBe('https://github.com/org/repo/pull/42');
+  });
+
+  it('includes the PR title in the result', async () => {
+    const [pr] = await getStalePullRequests('org', 'repo', 7);
+    expect(pr.title).toBe('Old feature');
   });
 
   it('returns empty array when no PRs are stale', async () => {
