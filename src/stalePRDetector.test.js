@@ -69,4 +69,14 @@ describe('getStalePullRequests', () => {
     const stale = await getStalePullRequests('org', 'repo', 30);
     expect(stale).toHaveLength(0);
   });
+
+  it('handles API errors gracefully', async () => {
+    __mockList.mockRejectedValue(new Error('API rate limit exceeded'));
+    await expect(getStalePullRequests('org', 'repo', 7)).rejects.toThrow('API rate limit exceeded');
+  });
+
+  it('handles PRs with no requested reviewers', async () => {
+    const [, pr] = await getStalePullRequests('org', 'repo', 0);
+    expect(pr.requestedReviewers).toEqual([]);
+  });
 });
