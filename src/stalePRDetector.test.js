@@ -57,6 +57,10 @@ describe('getStalePullRequests', () => {
     __mockList.mockResolvedValue({ data: mockPRs });
   });
 
+  afterEach(() => {
+    __mockList.mockReset();
+  });
+
   it('returns only PRs older than staleDays', async () => {
     const stale = await getStalePullRequests('org', 'repo', 7);
     expect(stale).toHaveLength(1);
@@ -88,5 +92,10 @@ describe('getStalePullRequests', () => {
   it('handles PRs with no requested reviewers', async () => {
     const [, pr] = await getStalePullRequests('org', 'repo', 0);
     expect(pr.requestedReviewers).toEqual([]);
+  });
+
+  it('returns all PRs when staleDays is 0', async () => {
+    const stale = await getStalePullRequests('org', 'repo', 0);
+    expect(stale).toHaveLength(mockPRs.length);
   });
 });
