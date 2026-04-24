@@ -1,0 +1,20 @@
+# pullcheck configuration
+# ---------------------------------------------------------------------------
+# Number of days without activity before a PR is considered stale.
+staleDaysThreshold: 3
+
+# Number of days without activity before a second (escalation) reminder fires.
+reminderDaysThreshold: 7
+
+# Slack channel where notifications are posted.
+slackChannel: "#engineering"
+
+# PRs carrying any of these labels will be silently skipped.
+ignoreLabels:
+  - wip
+  - draft
+  - on-hold
+  - do-not-merge
+
+# Path to the JSON file that maps GitHub usernames -> Slack user IDs.
+reviewerMapPath: "./reviewer-map.json"
