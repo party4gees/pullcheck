@@ -27,7 +27,11 @@ function loadConfig(configPath) {
   if (fs.existsSync(resolvedPath)) {
     const raw = fs.readFileSync(resolvedPath, 'utf8');
     const ext = path.extname(resolvedPath).toLowerCase();
-    userConfig = ext === '.json' ? JSON.parse(raw) : yaml.load(raw) || {};
+    try {
+      userConfig = ext === '.json' ? JSON.parse(raw) : yaml.load(raw) || {};
+    } catch (err) {
+      throw new Error(`Failed to parse config file at ${resolvedPath}: ${err.message}`);
+    }
   }
 
   const config = { ...DEFAULTS, ...userConfig };
@@ -38,6 +42,12 @@ function loadConfig(configPath) {
 
   if (typeof config.reminderDaysThreshold !== 'number' || config.reminderDaysThreshold < 0) {
     throw new Error(`Invalid reminderDaysThreshold: ${config.reminderDaysThreshold}`);
+  }
+
+  if (config.staleDaysThreshold > config.reminderDaysThreshold) {
+    throw new Error(
+      `staleDaysThreshold (${config.staleDaysThreshold}) must not exceed reminderDaysThreshold (${config.reminderDaysThreshold})`
+    );
   }
 
   if (!Array.isArray(config.ignoreLabels)) {
