@@ -54,6 +54,10 @@ describe('getStalenessLevel', () => {
     expect(getStalenessLevel(4)).toBe('warn');
     expect(getStalenessLevel(8)).toBe('critical');
   });
+
+  test('returns fresh for 0 days', () => {
+    expect(getStalenessLevel(0, thresholds)).toBe('fresh');
+  });
 });
 
 describe('stalenessEmoji', () => {
@@ -65,6 +69,10 @@ describe('stalenessEmoji', () => {
 
   test('returns fallback emoji for unknown level', () => {
     expect(stalenessEmoji('unknown')).toBe('⚪');
+  });
+
+  test('returns fallback emoji for empty string', () => {
+    expect(stalenessEmoji('')).toBe('⚪');
   });
 });
 
@@ -84,5 +92,10 @@ describe('formatPRAgeSummary', () => {
   test('formats a fresh PR correctly', () => {
     const result = formatPRAgeSummary(pr, 1, { warn: 3, critical: 7 });
     expect(result).toBe('🟢 *#42* — Add dark mode (idle for 1 day)');
+  });
+
+  test('formats a PR idle for less than a day', () => {
+    const result = formatPRAgeSummary(pr, 0, { warn: 3, critical: 7 });
+    expect(result).toBe('🟢 *#42* — Add dark mode (idle for less than a day)');
   });
 });
