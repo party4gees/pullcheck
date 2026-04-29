@@ -14,6 +14,12 @@ const DEFAULT_SNOOZE_DAYS = 2;
  * @returns {{ prId: string, expiresAt: string }}
  */
 function createSnooze(prId, days = DEFAULT_SNOOZE_DAYS, now = new Date()) {
+  if (!prId || typeof prId !== 'string') {
+    throw new Error('createSnooze: prId must be a non-empty string');
+  }
+  if (typeof days !== 'number' || days <= 0 || !Number.isFinite(days)) {
+    throw new Error('createSnooze: days must be a positive finite number');
+  }
   const expiresAt = new Date(now);
   expiresAt.setDate(expiresAt.getDate() + days);
   return { prId, expiresAt: expiresAt.toISOString() };
